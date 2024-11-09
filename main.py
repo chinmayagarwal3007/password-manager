@@ -4,6 +4,7 @@ import os
 import random
 from generate_password_func import generate_password_func
 import pyperclip
+import json
 
 window = Tk()
 window.title("Password Manager")
@@ -27,16 +28,36 @@ def add_func():
 
 
         if is_ok:
-            file_name = "passwords.txt"
+            new_data = {
+                website_name:{
+                    "user_name":user_name,
+                    "password_value":password_value
+                }
+            }
             
-            # Open the file in append mode, create if it doesn't exist
-            with open(file_name, 'a') as file:
-                file.write(data + '\n')
+            try:
+                file = open("passwords.json", 'r')
+            except FileNotFoundError:
+                file = open("passwords.json", 'w')
+                data = new_data
+            else:
+                try:
+                    data = json.load(file)
+                except:
+                    data = new_data
+                else:
+                    data.update(new_data)
+                finally:
+                    file = open("passwords.json", 'w')
+            finally:  
+                json.dump(data, file, indent=4)
+                file.close()
 
             # Clear the input fields after adding the entry
             website_input.delete(0, END)
             username_input.delete(0, END)
             password_input.delete(0, END)
+            messagebox.showinfo("Success", "Password saved successfully!")
 
 
 def gen_pass():
