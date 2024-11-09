@@ -67,6 +67,30 @@ def gen_pass():
     pyperclip.copy(passw)
     password_input.insert(0, passw)
 
+
+def search_pass():
+
+    x  = website_input.get().strip()
+    try:
+        file = open("passwords.json", 'r')
+    except:
+        messagebox.showerror("Error", "No data file found!")
+    else:
+        try:
+            data = json.load(file)
+        except:
+            messagebox.showerror("Error", "Info does not exist")
+        else:
+            try:
+                username = data[x]["user_name"]
+            except:
+                messagebox.showerror("Error", "Info does not exist")
+            else:    
+                currentpassword = data[x]["password_value"]
+                messagebox.showinfo("Info", f"User name: {username}\nPassword: {currentpassword}")
+        file.close()
+
+    
 canvas = Canvas(width=200, height=200, bg="white", highlightthickness=0)
 lock_img = PhotoImage(file="logo.png")
 canvas.create_image(100,100,image=lock_img)
@@ -82,7 +106,7 @@ password.grid(row=3,column=0)
 
 
 website_input = Entry()
-website_input.grid(row=1, column=1,columnspan=2, sticky="EW")
+website_input.grid(row=1, column=1, sticky="EW")
 website_input.focus()
 
 username_input = Entry()
@@ -90,6 +114,9 @@ username_input.grid(row=2, column=1,columnspan=2, sticky="EW")
 
 password_input = Entry()
 password_input.grid(row=3, column=1, sticky="EW")
+
+search_password = Button(text="Search", command=search_pass)
+search_password.grid(row=1, column=2, sticky="EW")
 
 generate_password = Button(text="Generate Paaword", command=gen_pass)
 generate_password.grid(row=3, column=2, sticky="EW")
